@@ -15,7 +15,7 @@
     <style type="text/css">
         body{box-shadow:none;}
         .cover-container{z-index: 2;max-width: 60%;}
-        .masthead{margin-bottom: 5rem!important;}
+        .masthead{margin-bottom: 2rem!important;}
         .bg{background-image: url(static/images/bg.png);height: 100vh;width: 100vw;position: fixed;background-repeat: no-repeat;background-size: cover;opacity: 0.1;z-index: 1;box-shadow: inset 0 0 5rem rgb(0 0 0 / 50%);}
         .nav-pills .nav-link.active, .nav-pills .show>.nav-link {color: #fff;background-color: #ff8d00;}
         #pills-tabContent{border: 1px solid #ccc;padding: 20px;}
@@ -25,6 +25,7 @@
         .modal-dialog {max-width: 80%;color:#000;}
         .modal-backdrop {z-index: 0;}
         .text-sample{cursor: pointer;padding: 2px;background: #ccc;border-radius: 5px;color:#000;}
+        .ellipsis{overflow:hidden;white-space: nowrap;text-overflow: ellipsis;}
         iframe{width: 100%;height: 80vh;border: 1px solid #ccc;}
     </style>
   </head>
@@ -53,10 +54,12 @@
                         </div>
                         
                         <div class="form-group col-md-12">
-                            <span class="text-sample" @click="setText('https://24h.pchome.com.tw/index')">24h.pchome.com.tw/index</span>
-                            <span class="text-sample" @click="setText('https://www.pchome.com.tw')">www.pchome.com.tw</span>
-                            <span class="text-sample" @click="setText('https://www.google.com')">www.google.com</span>
+                            <span class="text-sample" @click="setText('https://www.w3schools.com/')">https://www.w3schools.com/</span>
                             <span class="text-sample" @click="setText('https://www.etmall.com.tw/')">https://www.etmall.com.tw/</span>
+                            <span class="text-sample" @click="setText('https://tw.news.yahoo.com/weather/')">https://tw.news.yahoo.com/weather/</span>
+                            <span class="text-sample" @click="setText('https://tw.buy.yahoo.com/')">https://tw.buy.yahoo.com/</span>
+                            <span class="text-sample" @click="setText('https://github.com/')">https://github.com/</span>
+                            
                             
                         </div>
                         <div class="form-group col-md-12">
@@ -87,22 +90,49 @@
                         </nav>
                     </div>
                 </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                          <label>Title</label>
+                          <div class="input-group">
+                            <input type="text" class="form-control" v-model="form.filter_title">
+                          </div>
+                    </div>
+                    <div class="form-group col-md-4">
+                          <label>Desc</label>
+                          <div class="input-group">
+                            <input type="text" class="form-control" v-model="form.filter_desc">
+                          </div>
+                    </div>
+                    <div class="form-group col-md-2">
+                          <label>Create At</label>
+                          <div class="input-group">
+                            <input type="date" class="form-control" v-model="form.filter_at">
+                          </div>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label style="opacity: 0">.</label>
+                        <div class="input-group">
+                            <a href="#" class="btn btn-info btn-block" @click="getPastUrlData(0)">Filter</a>
+                        </div>
+                    </div>
+                </div>
                 <div class="card done-search" v-if="pastData.length>0" v-for="data in pastData">
                   <div class="card-body">
                     <div class="form-row">
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-8">
                             <div style="cursor: pointer;font-size: 24pt" @click="showDetail('cache/'+data.dir+'/cache.html',data.dir,data.status)">
                                 <span v-if="data.title">##data.title##</span>
                                 <span v-else>##data.url##</span>
                             </div>
                         </div>
-                        <div class="form-group col-md-8">
+                        <div class="form-group col-md-4">
                             <small style="text-align: left">##data.desc##</small>
                         </div>
                         <div class="form-group col-md-6" style="border-top: 1px solid #fff;padding-top: 20px;">
                             <!--<a :href="'cache/'+data.dir+'/cache.html'" target="blank">link</a>-->
-                            <div style="overflow: hidden;max-height: 150px"><img style="max-width: 250px" v-if="data.screenshot!='none'" :src="data.screenshot"></div>
-                            <span style="cursor: pointer;" v-else-if="data.status!='Queued'" @click="showDetail('cache/'+data.dir+'/cache.html',data.dir,data.status)">Click to Generate Snapshoot!</span>
+                            <span style="cursor: pointer;" v-if="data.status=='Finished'&&data.screenshot=='none'" @click="showDetail('cache/'+data.dir+'/cache.html',data.dir,data.status)">Click to Generate Snapshoot!</span>
+                            <div style="overflow: hidden;max-height: 150px" v-else-if="data.screenshot!='none'"><img style="max-width: 250px" :src="data.screenshot"></div>
+                            
                         </div>
                         <div class="form-group col-md-6" style="border-top: 1px solid #fff;padding-top: 20px;">
                             <img v-if="data.status=='Queued'" style="width:20px" src="static/images/loading.gif">
@@ -186,6 +216,9 @@
                 'page':0,
                 'dir':'',
                 '_token': $('[name=_token]').val(),
+                'filter_title':'',
+                'filter_desc':'',
+                'filter_at':'',
             },
             pastData:{
             },
@@ -255,6 +288,7 @@
                         app.ajax('/saveScreenshot',postData,null,function(res){
                             if(res.code==200){
                                 app.getPastUrlData(0);
+                                app.showDetail(url,dir);
                                 $('#wait-ss').hide();
                                 $('#done-ss').show();
                             }else{

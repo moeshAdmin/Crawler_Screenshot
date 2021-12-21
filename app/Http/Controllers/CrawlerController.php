@@ -79,13 +79,26 @@ class CrawlerController extends Controller
         }else{
             $offset = 0;
         }
-        $count = DB::table('crawler_data')->count();
+        $where = [];
+
+        if($request->filter_title){
+            array_push($where,['title', 'like','%'.$request->filter_title.'%']);
+        }
+        if($request->filter_desc){
+            array_push($where,['desc', 'like','%'.$request->filter_desc.'%']);
+        }
+        if($request->filter_at){
+            array_push($where,['created_at', 'like','%'.$request->filter_at.'%']);
+        }
+        $count = DB::table('crawler_data')->where($where)->count();
         $resData = DB::table('crawler_data')
                     ->orderBy('created_at', 'desc')
+                    ->where($where)
                     ->skip($offset)
                     ->take(5)
                     ->get()->toArray();
-
+                    
+        $pastData = [];
         foreach ($resData as $key => $value) {
             $pastData[$key]['title'] = $value->title;
             $pastData[$key]['desc'] = $value->desc;
@@ -218,10 +231,10 @@ class CrawlerController extends Controller
         $retData['title'] = '';
         $retData['desc'] = '';
         if(isset($title[2][0])){
-            $retData['title'] = htmlspecialchars(strip_tags($title[2][0]));
+            $retData['title'] = html_entity_decode(htmlspecialchars_decode(strip_tags($title[2][0])));
         }
         if(isset($desc[1][0])){
-            $retData['desc'] = htmlspecialchars(strip_tags($desc[1][0]));
+            $retData['desc'] = str_replace('/', '', html_entity_decode(htmlspecialchars_decode(strip_tags($desc[1][0]))));
         }
         
         return $retData;
