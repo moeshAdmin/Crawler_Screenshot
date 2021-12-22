@@ -16,7 +16,7 @@
         body{box-shadow:none;}
         .cover-container{z-index: 2;max-width: 60%;}
         .masthead{margin-bottom: 2rem!important;}
-        .bg{background-image: url(static/images/bg.png);height: 100vh;width: 100vw;position: fixed;background-repeat: no-repeat;background-size: cover;opacity: 0.1;z-index: 1;box-shadow: inset 0 0 5rem rgb(0 0 0 / 50%);}
+        .bg{background-image: url({{asset('static/images/bg.png')}});height: 100vh;width: 100vw;position: fixed;background-repeat: no-repeat;background-size: cover;opacity: 0.1;z-index: 1;box-shadow: inset 0 0 5rem rgb(0 0 0 / 50%);}
         .nav-pills .nav-link.active, .nav-pills .show>.nav-link {color: #fff;background-color: #ff8d00;}
         #pills-tabContent{border: 1px solid #ccc;padding: 20px;}
         .lead{margin: 0 auto;}
@@ -70,7 +70,7 @@
                     </div>
                 </div>
                 
-                <div id="loading" style="display: none"><img style="width:20px" src="static/images/loading.gif">Processing..</div>
+                <div id="loading" style="display: none"><img style="width:20px" src="{{asset('static/images/loading.gif')}}">Processing..</div>
 
                 <h3>List</h3>
                 <div class="form-row">
@@ -142,7 +142,7 @@
                             
                         </div>
                         <div class="form-group col-md-6" style="border-top: 1px solid #fff;padding-top: 20px;">
-                            <img v-if="data.status=='Queued'" style="width:20px" src="static/images/loading.gif">
+                            <img v-if="data.status=='Queued'" style="width:20px" src="{{asset('static/images/loading.gif')}}">
                             ##data.status##<br>
                             ##data.created_at##
                         </div>
@@ -187,7 +187,7 @@
                     
                     
                 </div>
-                <div id="wait-ss" style="display: none"><img style="width:20px" src="static/images/loading.gif">Wait ScreenShot..</div>
+                <div id="wait-ss" style="display: none"><img style="width:20px" src="{{asset('static/images/loading.gif')}}">Wait ScreenShot..</div>
                 <div id="done-ss" style="display: none">ScreenShot Done!</div>
                 <iframe id="detail-frame" :src="modal.src"></iframe>
                 <!--<div style="max-height: 80vh;background: #fff;">

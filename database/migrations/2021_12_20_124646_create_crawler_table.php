@@ -18,7 +18,11 @@ class CreateCrawlerTable extends Migration
             $table->string('title');
             $table->string('desc');
             $table->string('dir');
-            $table->timestamps('create_at');
+            $table->string('url');
+            $table->string('status');
+            $table->text('screenshot');
+            $table->timestamps('created_at');
+            $table->timestamps('updated_at');
         });
     }
 
