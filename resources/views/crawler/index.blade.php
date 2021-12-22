@@ -54,11 +54,11 @@
                         </div>
                         
                         <div class="form-group col-md-12">
-                            <span class="text-sample" @click="setText('https://www.w3schools.com/')">https://www.w3schools.com/</span>
-                            <span class="text-sample" @click="setText('https://www.etmall.com.tw/')">https://www.etmall.com.tw/</span>
-                            <span class="text-sample" @click="setText('https://tw.news.yahoo.com/weather/')">https://tw.news.yahoo.com/weather/</span>
-                            <span class="text-sample" @click="setText('https://tw.buy.yahoo.com/')">https://tw.buy.yahoo.com/</span>
-                            <span class="text-sample" @click="setText('https://github.com/')">https://github.com/</span>
+                            <span class="text-sample" @click="setText('url','https://www.w3schools.com/')">https://www.w3schools.com/</span>
+                            <span class="text-sample" @click="setText('url','https://www.etmall.com.tw/')">https://www.etmall.com.tw/</span>
+                            <span class="text-sample" @click="setText('url','https://tw.news.yahoo.com/weather/')">https://tw.news.yahoo.com/weather/</span>
+                            <span class="text-sample" @click="setText('url','https://tw.buy.yahoo.com/')">https://tw.buy.yahoo.com/</span>
+                            <span class="text-sample" @click="setText('url','https://github.com/')">https://github.com/</span>
                             
                             
                         </div>
@@ -97,7 +97,7 @@
                             <input type="text" class="form-control" v-model="form.filter_title">
                           </div>
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-2">
                           <label>Desc</label>
                           <div class="input-group">
                             <input type="text" class="form-control" v-model="form.filter_desc">
@@ -112,9 +112,16 @@
                     <div class="form-group col-md-2">
                         <label style="opacity: 0">.</label>
                         <div class="input-group">
+                            <a href="#" class="btn btn-secondary btn-block" @click="setText('clear','')">Clear</a>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label style="opacity: 0">.</label>
+                        <div class="input-group">
                             <a href="#" class="btn btn-info btn-block" @click="getPastUrlData(0)">Filter</a>
                         </div>
                     </div>
+                    
                 </div>
                 <div class="card done-search" v-if="pastData.length>0" v-for="data in pastData">
                   <div class="card-body">
@@ -160,7 +167,7 @@
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Page Details</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -241,6 +248,7 @@
                         app.$data['results'] = res.data;
                         app.$data['form']['dir'] = res.data['dir'];
                         setTimeout(function(){
+                            app.setText('clear','');
                             app.getPastUrlData(0);
                             app.startBackground(res.data['dir']);
                         }, 10);  
@@ -331,8 +339,14 @@
                 }
                 return false;
             },
-            setText:function(url){
-                app.$data['form']['url'] = url;
+            setText:function(type,url){
+                if(type=='url'){
+                    app.$data['form']['url'] = url;
+                }else if(type=='clear'){
+                    app.$data['form']['filter_title'] = '';
+                    app.$data['form']['filter_desc'] = '';
+                    app.$data['form']['filter_at'] = '';
+                }
             },
             ajax: function (url,data,detail,callback){
                 return this.$http.post(url, data,{emulateJSON: true})
