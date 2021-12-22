@@ -22,7 +22,6 @@ class CreateCrawlerTable extends Migration
             $table->string('status');
             $table->text('screenshot');
             $table->timestamps('created_at');
-            $table->timestamps('updated_at');
         });
     }
 
